@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Quest 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Quicksand',sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ffd6e7,#fff0f6);
+overflow:hidden;
+}
+
+.card{
+background:white;
+padding:42px;
+border-radius:28px;
+text-align:center;
+width:90%;
+max-width:440px;
+box-shadow:0 25px 60px rgba(255,105,180,.25);
+animation:pop .5s ease;
+position:relative;
+}
+
+@keyframes pop{
+from{transform:scale(.8);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+
+h1{color:#ff4d88;margin-bottom:10px}
+
+button{
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:16px;
+border:none;
+font-size:16px;
+cursor:pointer;
+transition:.25s;
+}
+
+.option{
+background:#fff;
+border:2px solid #ffd1df;
+}
+
+.option:hover{
+background:#fff0f6;
+transform:scale(1.03);
+}
+
+.yes{
+background:#ff4d88;
+color:white;
+font-weight:700;
+}
+
+.yes:hover{
+background:#ff2e73;
+transform:scale(1.08);
+}
+
+.no{
+position:absolute;
+background:white;
+border:2px solid #ffd1df;
+width:120px;
+}
+
+.feedback{
+color:#ff4d88;
+margin-top:16px;
+font-weight:700;
+min-height:24px;
+}
+
+.envelope{
+font-size:95px;
+cursor:pointer;
+animation:float 2s infinite ease-in-out;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-14px)}
+}
+
+.tap{
+color:#ff4d88;
+font-weight:600;
+}
+
+.flower{
+position:absolute;
+font-size:30px;
+pointer-events:none;
+animation:explode 3s forwards;
+}
+
+@keyframes explode{
+from{transform:translateY(200px) scale(.5);opacity:0}
+to{transform:translate(var(--x),var(--y)) scale(1.2);opacity:1}
+}
+
+.cat{
+width:240px;
+border-radius:20px;
+margin-top:14px;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.letter{
+font-size:18px;
+line-height:1.6;
+color:#444;
+}
+
+@keyframes floatUp{
+from{transform:translateY(0);opacity:1}
+to{transform:translateY(-160px);opacity:0}
+}
+
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+
+const app=document.getElementById("app");
+
+const questions=[
+{
+question:"Where did we meet? 💕",
+options:["Salaam","At a café","Fate just dropped you into my life"],
+answer:"Salaam",
+success:"I’m so glad I found you ❤️"
+},
+{
+question:"What am I doing most of the day without telling you? 😌",
+options:["Working","Thinking about you","Scrolling endlessly"],
+answer:"Thinking about you",
+success:"I’m thinking about you all the time 💭❤️"
+},
+{
+question:"What do I like the most about you? 🥹",
+options:["Everything","Your smile","Your glasses","Your glasses and eyes"],
+answer:"Your glasses and eyes",
+success:"There’s just something about your glasses and those eyes… I could get lost in them ❤️"
+}
+];
+
+let step=-2;
+
+function renderEnvelope(){
+app.innerHTML=`
+<div class="card">
+<div class="envelope" onclick="openLetter()">💌</div>
+<p class="tap">Tap to open something meant only for you...</p>
+</div>
+`;
+}
+
+function openLetter(){
+step=-1;
+app.innerHTML=`
+<div class="card">
+<h1>Hi you ❤️</h1>
+<p class="letter">
+Before this starts… I just need you to know something.
+<br><br>
+Out of all the people in this world,
+I somehow found you… and that’s my favorite coincidence.
+<br><br>
+Now let’s see if you know us as well as I do 😌
+</p>
+<button class="yes" onclick="startGame()">Start 💕</button>
+</div>
+`;
+}
+
+function startGame(){
+step=0;
+renderQuestion();
+}
+
+function renderQuestion(){
+const q=questions[step];
+
+let buttons="";
+q.options.forEach(opt=>{
+buttons+=`<button class="option" onclick="checkAnswer('${opt}')">${opt}</button>`;
+});
+
+app.innerHTML=`
+<div class="card">
+<h1>Love Quest 💌</h1>
+<p>${q.question}</p>
+${buttons}
+<div id="feedback" class="feedback"></div>
+</div>
+`;
+}
+
+function checkAnswer(option){
+const feedback=document.getElementById("feedback");
+
+if(option===questions[step].answer){
+
+feedback.innerText=questions[step].success;
+createMiniHearts();
+
+setTimeout(()=>{
+step++;
+if(step<questions.length){
+renderQuestion();
+}else{
+renderProposal();
+}
+},1600);
+
+}else{
+feedback.innerText="Nope 😌 try again my love";
+}
+}
+
+function createMiniHearts(){
+for(let i=0;i<10;i++){
+const heart=document.createElement("div");
+heart.innerText="💖";
+heart.style.position="absolute";
+heart.style.left=(Math.random()*100)+"vw";
+heart.style.top="70vh";
+heart.style.fontSize="20px";
+heart.style.animation="floatUp 1.6s forwards";
+
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),1600);
+}
+}
+
+function renderProposal(){
+app.innerHTML=`
+<div class="card">
+<h1>You unlocked my heart 💘</h1>
+<p>So… will you be my Valentine? 🌹</p>
+<button class="yes" onclick="showCat()">YES 💕</button>
+<button id="noBtn" class="no">No 😏</button>
+</div>
+`;
+
+const noBtn=document.getElementById("noBtn");
+noBtn.addEventListener("mouseover",moveNo);
+}
+
+function moveNo(){
+const btn=document.getElementById("noBtn");
+btn.style.top=Math.random()*300-150+"px";
+btn.style.left=Math.random()*300-150+"px";
+}
+
+function showCat(){
+createFlowers();
+
+app.innerHTML=`
+<div class="card">
+<h1>BEST. DECISION. EVER. 😍</h1>
+<img class="cat" src="https://media.giphy.com/media/v6aOjy0Qo1fIA/giphy.gif">
+<p class="tap">You’re stuck with me now ❤️</p>
+</div>
+`;
+}
+
+function createFlowers(){
+for(let i=0;i<35;i++){
+const flower=document.createElement("div");
+flower.className="flower";
+flower.innerText=Math.random()>.5?"🌸":"🌹";
+flower.style.setProperty('--x',(Math.random()*900-450)+'px');
+flower.style.setProperty('--y',(Math.random()*-700)+'px');
+flower.style.left="50%";
+flower.style.top="50%";
+flower.style.animationDuration=(2+Math.random())+"s";
+
+document.body.appendChild(flower);
+setTimeout(()=>flower.remove(),3000);
+}
+}
+
+renderEnvelope();
+
+</script>
+</body>
+</html>
+
